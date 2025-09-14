@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MallPOS — Offline POS (HTML/CSS/JS)</title>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <h1>MallPOS</h1>
+        <p class="muted">Offline • Camera Scanner • A4 Invoice</p>
+      </div>
+
+      <div class="card">
+        <h3>Add Product</h3>
+        <label>Product name</label>
+        <input id="inpName" placeholder="e.g. Men T-Shirt" />
+        <label>SKU (optional)</label>
+        <input id="inpSku" placeholder="optional" />
+        <label>Price (₹)</label>
+        <input id="inpPrice" type="number" step="0.01" placeholder="100.00" />
+        <label>Initial stock (units)</label>
+        <input id="inpStock" type="number" step="1" placeholder="10" />
+        <div class="row">
+          <button id="btnAddProduct" class="primary">Add Product</button>
+          <button id="btnExport" class="outline">Export CSV</button>
+        </div>
+      </div>
+
+      <div class="card small">
+        <h3>Scanner</h3>
+        <button id="toggleScanner" class="small-btn">Start Camera</button>
+        <p class="muted">Allow camera permission when asked. If using files directly, use a local server.</p>
+      </div>
+
+      <div class="card small muted">
+        <div>Products: <span id="storageSize">0</span></div>
+        <div style="margin-top:8px">
+          <button id="btnImport" class="outline">Import CSV</button>
+          <input id="fileInput" type="file" accept=".csv" style="display:none" />
+        </div>
+      </div>
+
+      <div class="card small">
+        <h3>Label Print</h3>
+        <p class="muted">Click a product → Print Label (browser print dialog)</p>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="search-row">
+          <input id="manualScanInput" placeholder="Paste/Type barcode & press Enter" />
+          <button id="btnManualAdd" class="primary small">Add</button>
+        </div>
+
+        <div class="cart-summary">
+          <div class="totals">
+            <div>Total: <strong>₹<span id="grandTotal">0.00</span></strong></div>
+            <div>Items: <strong><span id="totalItems">0</span></strong></div>
+          </div>
+          <div class="actions">
+            <input id="customerName" placeholder="Customer name" />
+            <button id="btnInvoice" class="primary">Generate Invoice</button>
+            <button id="btnClear" class="danger small">Clear All</button>
+          </div>
+        </div>
+      </header>
+
+      <section class="content-grid">
+        <div class="panel">
+          <h2>Products</h2>
+          <div id="productList" class="product-list"></div>
+        </div>
+
+        <div class="panel">
+          <h2>Cart</h2>
+          <table class="cart-table" id="cartTable">
+            <thead>
+              <tr><th>Item</th><th>Price</th><th>Qty</th><th>Amount</th><th></th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+
+          <div class="cart-footer">
+            <div class="muted">Discount (%): <input id="discountInput" type="number" min="0" max="100" value="0" style="width:80px" /></div>
+            <div class="muted">Tax (%): <input id="taxInput" type="number" min="0" max="100" value="0" style="width:80px" /></div>
+          </div>
+        </div>
+
+        <div class="panel fullwidth">
+          <h2>Scanner Preview & Labels</h2>
+          <div id="qr-reader" style="width:100%;max-width:520px"></div>
+          <div id="labelPreview" class="label-preview"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Hidden print area used for label printing -->
+  <div id="printArea" style="display:none"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
